@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     width: BAR_WIDTH,
     borderBottomWidth: BAR_HEIGHT,
     borderBottomColor: 'black',
-    borderLeftWidth: 15,
     borderLeftColor: 'transparent',
 
     marginRight: 10,
@@ -122,7 +121,6 @@ const styles = StyleSheet.create({
     width: BAR_WIDTH,
     borderBottomWidth: BAR_HEIGHT,
     borderBottomColor: 'black',
-    borderRightWidth: 15,
     borderRightColor: 'transparent',
   },
 });
