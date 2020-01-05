@@ -6,20 +6,22 @@ import {
   GestureResponderEvent,
 } from 'react-native';
 
-const BAR_WIDTH = 15;
-const BAR_HEIGHT = 40;
-const BAR_SPACE = 10;
-const DURATION = 200;
-
-const DIMENSION = Math.max(BAR_HEIGHT, BAR_WIDTH * 2 + BAR_SPACE);
-
 export default ({
   playing,
   onPress,
+  color = 'black',
+  size = 40,
+  duration = 200,
 }: {
   playing: boolean;
   onPress: (event: GestureResponderEvent) => void;
+  color?: string;
+  size?: number;
+  duration?: number;
 }) => {
+  const barHeight = size;
+  const barWidth = (size * 0.85) / 3;
+
   const [anim] = useState(new Animated.Value(0));
   const [rotation] = useState(new Animated.Value(0));
 
@@ -33,11 +35,11 @@ export default ({
       [
         Animated.timing(anim, {
           toValue: newToggleCount & 1, // 1 if odd, 0 otherwise
-          duration: DURATION,
+          duration,
         }),
         Animated.timing(rotation, {
           toValue: newToggleCount % 2,
-          duration: DURATION,
+          duration,
           // useNativeDriver: true,
         }),
       ],
@@ -45,11 +47,20 @@ export default ({
     ).start();
   }, [playing]);
 
+  const barStyle = {
+    width: barWidth,
+    borderBottomWidth: barHeight,
+    borderBottomColor: color,
+    borderRightColor: 'transparent',
+    borderLeftColor: 'transparent',
+  };
+
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <Animated.View
         style={[
           styles.root,
+          { width: size, height: size },
           {
             transform: [
               {
@@ -63,34 +74,34 @@ export default ({
         ]}>
         <Animated.View
           style={[
-            styles.left,
+            barStyle,
             {
               borderLeftWidth: anim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, BAR_WIDTH + BAR_SPACE / 2],
+                outputRange: [0, barWidth * 2],
               }),
               // width: anim.interpolate({
               //   inputRange: [0, 1],
-              //   outputRange: [BAR_WIDTH, BAR_WIDTH + BAR_SPACE / 2],
+              //   outputRange: [barWidth, barWidth + barWidth / 2],
               // }),
               marginRight: anim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [BAR_SPACE, 0],
+                outputRange: [barWidth, 0],
               }),
             },
           ]}
         />
         <Animated.View
           style={[
-            styles.right,
+            barStyle,
             {
               borderRightWidth: anim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, BAR_WIDTH + BAR_SPACE / 2],
+                outputRange: [0, barWidth * 2],
               }),
               // width: anim.interpolate({
               //   inputRange: [0, 1],
-              //   outputRange: [BAR_WIDTH, BAR_WIDTH + BAR_SPACE / 2],
+              //   outputRange: [barWidth, barWidth + barWidth / 2],
               // }),
             },
           ]}
@@ -105,22 +116,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: DIMENSION,
-    height: DIMENSION,
-    // backgroundColor: 'green',
-  },
-  left: {
-    width: BAR_WIDTH,
-    borderBottomWidth: BAR_HEIGHT,
-    borderBottomColor: 'black',
-    borderLeftColor: 'transparent',
-
-    marginRight: 10,
-  },
-  right: {
-    width: BAR_WIDTH,
-    borderBottomWidth: BAR_HEIGHT,
-    borderBottomColor: 'black',
-    borderRightColor: 'transparent',
   },
 });
